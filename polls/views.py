@@ -12,6 +12,7 @@ class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
 
+    # The list of polls shows polls published in future in index without filtering.
     def get_queryset(self):
         """Return the last five published questions."""
         return Question.objects.filter(pub_date__lte=timezone.now()
@@ -22,6 +23,13 @@ class DetailView(generic.DetailView):
     model = Question
     template_name = 'polls/detail.html'
 
+    # Same reason as IndexView, users may guess out polls/q_num even if index doesn't show it.
+    def get_queryset(self):
+        """
+        Excludes any questions that aren't published yet.
+        """
+        return Question.objects.filter(pub_date__lte=timezone.now())
+
 
 class ResultsView(generic.DetailView):
     model = Question
@@ -29,6 +37,7 @@ class ResultsView(generic.DetailView):
 
 
 def vote(request, question_id):
+    # Get question from the model
     p = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = p.choice_set.get(pk=request.POST['choice'])
@@ -44,4 +53,6 @@ def vote(request, question_id):
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
+        # reverse: view that we want to pass control to and the variable portion
+        # of the URL pattern that points to that view.
         return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))

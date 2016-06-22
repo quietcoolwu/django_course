@@ -7,6 +7,8 @@ from django.db import models
 # Create your models here.
 
 class Question(models.Model):
+    # Field Instance(e.g. q_text) can be used as column name.
+    # Some Field classes have required arguments.(e.g. max_length)
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
 
@@ -23,6 +25,7 @@ class Question(models.Model):
 
 
 class Choice(models.Model):
+    # ForeignKey: each Choice is related to a single Question.
     question = models.ForeignKey(Question)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)

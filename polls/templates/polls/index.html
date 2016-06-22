@@ -1,6 +1,7 @@
 {% if latest_question_list %}
     <ul>
         {% for question in latest_question_list %}
+{#            remove a reliance on specific URL paths defined in your url configurations by using the {% url %} template tags. prj.url-namespace -> app.url-name#}
             <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
         {% endfor %}
     </ul>
